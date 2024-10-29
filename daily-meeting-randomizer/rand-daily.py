@@ -28,6 +28,16 @@ def generate_encouragement(next_person):
   encouragement += "."
   return encouragement
 
+def generate_ending():
+  finish_phrases = ["And that's it",
+                    "And that's it for me",
+                    "That's all for me today",
+                    "That's it from my side",
+                    "It's all for me"]
+  no_blockers = "\nNo blockers." if random.choice([True, False]) else ""
+  finish_message = f"{random.choice(finish_phrases)}.{no_blockers}"
+  return finish_message
+
 
 def read_file(file_name):
   with open(file_name, "r") as file:
@@ -40,14 +50,9 @@ def main():
 
   greeting_message = generate_greeting()
   encouragement_message = generate_encouragement(next_person)
+  finish_message = generate_ending()
 
-  finish_phrases = ["And that's it",
-                    "And that's it for me",
-                    "That's all for me today",
-                    "That's it from my side",
-                    "It's all for me"]
-
-  main_message = f"{greeting_message}\n\n{work_done}\n\n{random.choice(finish_phrases)}.\n{encouragement_message}"
+  main_message = f"{greeting_message}\n\n{work_done}\n\n{finish_message}\n{encouragement_message}"
   main_message = main_message.replace("\n", "\n│ ")
 
   print("┌─────────────")
