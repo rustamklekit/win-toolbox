@@ -39,6 +39,24 @@ def read_file(file_name: str) -> str:
   with open(file_name, "r") as file:
     return file.read().strip()
 
+def put_in_box(string: str, closed_box: bool) -> str:
+  lines = string.split("\n")
+  max_length = max(len(line) for line in lines)
+  box = "┌" + "─" * (max_length + 2) + "┐\n"
+
+  for line in lines:
+    if closed_box:
+      box += f"│ {line.ljust(max_length)} │" + "\n"
+    else:
+      if len(line) == 0:
+        box += "│\n"
+      else:
+        box += f"│ {line}" + "\n"
+
+  box += "└" + "─" * (max_length + 2) + "┘"
+
+  return box
+
 def main() -> None:
   work_done = read_file(MESSAGE_FILE)
   next_person = read_file(NEXT_FILE)
@@ -48,11 +66,8 @@ def main() -> None:
   finish_message = generate_ending()
 
   main_message = f"{greeting_message}\n\n{work_done}\n\n{finish_message}\n{encouragement_message}"
-  main_message = main_message.replace("\n", "\n│ ")
 
-  print("┌─────────────")
-  print(f"│ {main_message}")
-  print("└─────────────────")
+  print(put_in_box(main_message, False))
 
 if __name__ == "__main__":
   main()
