@@ -1,8 +1,7 @@
+import configparser
 import random
 
-MESSAGE_FILE = 'message.txt'
-NEXT_FILE = 'next.txt'
-USUAL_NEXT_FILE = 'usual-next.txt'
+CONFIG_FILE_PATH = 'config.ini'
 
 BOX_TOP_LEFT = "┌"
 BOX_TOP_RIGHT = "┐"
@@ -28,7 +27,11 @@ def generate_encouragement(usual_next_person: str, next_person: str) -> str:
   encouragement = ""
   if usual_next_person and usual_next_person != next_person:
     encouragement += f"{usual_next_person} is not here.\n"
-    transitions = ["So, ", "Therefore, ", "Hence, ", "Thus, ", ""]
+    transitions = ["So, ",
+                   "Therefore, ",
+                   "Hence, ",
+                   "Thus, ",
+                   ""]
     encouragement += random.choice(transitions)
   encourage_next = ["go next",
                     "continue",
@@ -52,11 +55,6 @@ def generate_ending() -> str:
   return f"{random.choice(finish_phrases)}.{no_blockers}"
 
 
-def read_file(file_name: str) -> str:
-  with open(file_name, "r") as file:
-    return file.read().strip()
-
-
 def put_in_box(string: str, closed_box: bool) -> str:
   lines = string.split("\n")
   max_length = max(len(line) for line in lines)
@@ -74,9 +72,16 @@ def put_in_box(string: str, closed_box: bool) -> str:
 
 
 def main() -> None:
-  work_done = read_file(MESSAGE_FILE)
-  next_person = read_file(NEXT_FILE)
-  usual_next_person = read_file(USUAL_NEXT_FILE)
+  config = configparser.ConfigParser()
+  try:
+    config.read(CONFIG_FILE_PATH)
+    work_done = config["app"]["message"]
+    next_person = config["app"]["next"]
+    usual_next_person = config["app"]["usual_next"]
+    closed_box = config.getboolean('app', 'closed_output')
+  except (configparser.Error, KeyError) as e:
+    print(f"Error reading config file: {e}")
+    return
 
   greeting_message = generate_greeting()
   encouragement_message = generate_encouragement(usual_next_person, next_person)
@@ -84,7 +89,7 @@ def main() -> None:
 
   main_message = f"{greeting_message}\n\n{work_done}\n\n{finish_message}\n{encouragement_message}"
 
-  print(put_in_box(main_message, False))
+  print(put_in_box(main_message, closed_box))
 
 
 if __name__ == "__main__":
