@@ -2,6 +2,7 @@ import random
 
 MESSAGE_FILE = 'message.txt'
 NEXT_FILE = 'next.txt'
+USUAL_NEXT_FILE = 'usual-next.txt'
 
 BOX_TOP_LEFT = "┌"
 BOX_TOP_RIGHT = "┐"
@@ -9,6 +10,7 @@ BOX_BOTTOM_LEFT = "└"
 BOX_BOTTOM_RIGHT = "┘"
 BOX_HORIZONTAL = "─"
 BOX_VERTICAL = "│"
+
 
 def generate_greeting() -> str:
   greetings = ["Hello",
@@ -21,17 +23,24 @@ def generate_greeting() -> str:
   thank_you = "Thank you.\n" if random.choice([True, False]) else ""
   return f"{thank_you}{random.choice(greetings)}, {random.choice(group_names)}."
 
-def generate_encouragement(next_person: str) -> str:
+
+def generate_encouragement(usual_next_person: str, next_person: str) -> str:
+  encouragement = ""
+  if usual_next_person and usual_next_person != next_person:
+    encouragement += f"{usual_next_person} is not here.\n"
+    transitions = ["So, ", "Therefore, ", "Hence, ", "Thus, ", ""]
+    encouragement += random.choice(transitions)
   encourage_next = ["go next",
                     "continue",
                     "carry on",
                     ""]
   encourage_next_choice = random.choice(encourage_next)
-  encouragement = next_person
+  encouragement += next_person
   if encourage_next_choice:
     encouragement += f", please, {encourage_next_choice}"
   encouragement += "."
   return encouragement
+
 
 def generate_ending() -> str:
   finish_phrases = ["And that's it",
@@ -42,9 +51,11 @@ def generate_ending() -> str:
   no_blockers = "\nNo blockers." if random.choice([True, False]) else ""
   return f"{random.choice(finish_phrases)}.{no_blockers}"
 
+
 def read_file(file_name: str) -> str:
   with open(file_name, "r") as file:
     return file.read().strip()
+
 
 def put_in_box(string: str, closed_box: bool) -> str:
   lines = string.split("\n")
@@ -61,17 +72,20 @@ def put_in_box(string: str, closed_box: bool) -> str:
 
   return box
 
+
 def main() -> None:
   work_done = read_file(MESSAGE_FILE)
   next_person = read_file(NEXT_FILE)
+  usual_next_person = read_file(USUAL_NEXT_FILE)
 
   greeting_message = generate_greeting()
-  encouragement_message = generate_encouragement(next_person)
+  encouragement_message = generate_encouragement(usual_next_person, next_person)
   finish_message = generate_ending()
 
   main_message = f"{greeting_message}\n\n{work_done}\n\n{finish_message}\n{encouragement_message}"
 
   print(put_in_box(main_message, False))
+
 
 if __name__ == "__main__":
   main()
