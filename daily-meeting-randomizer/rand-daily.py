@@ -3,8 +3,7 @@ import random
 MESSAGE_FILE = 'message.txt'
 NEXT_FILE = 'next.txt'
 
-
-def generate_greeting():
+def generate_greeting() -> str:
   greetings = ["Hello",
                "Hey",
                "Good day",
@@ -15,36 +14,32 @@ def generate_greeting():
   thank_you = "Thank you.\n" if random.choice([True, False]) else ""
   return f"{thank_you}{random.choice(greetings)}, {random.choice(group_names)}."
 
-
-def generate_encouragement(next_person):
+def generate_encouragement(next_person: str) -> str:
   encourage_next = ["go next",
                     "continue",
                     "carry on",
                     ""]
   encourage_next_choice = random.choice(encourage_next)
   encouragement = next_person
-  if encourage_next_choice != "":
-    encouragement += ", please, " + encourage_next_choice
+  if encourage_next_choice:
+    encouragement += f", please, {encourage_next_choice}"
   encouragement += "."
   return encouragement
 
-def generate_ending():
+def generate_ending() -> str:
   finish_phrases = ["And that's it",
                     "And that's it for me",
                     "That's all for me today",
                     "That's it from my side",
                     "It's all for me"]
   no_blockers = "\nNo blockers." if random.choice([True, False]) else ""
-  finish_message = f"{random.choice(finish_phrases)}.{no_blockers}"
-  return finish_message
+  return f"{random.choice(finish_phrases)}.{no_blockers}"
 
-
-def read_file(file_name):
+def read_file(file_name: str) -> str:
   with open(file_name, "r") as file:
     return file.read().strip()
 
-
-def main():
+def main() -> None:
   work_done = read_file(MESSAGE_FILE)
   next_person = read_file(NEXT_FILE)
 
@@ -58,7 +53,6 @@ def main():
   print("┌─────────────")
   print(f"│ {main_message}")
   print("└─────────────────")
-
 
 if __name__ == "__main__":
   main()
