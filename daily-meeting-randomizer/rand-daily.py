@@ -3,6 +3,13 @@ import random
 MESSAGE_FILE = 'message.txt'
 NEXT_FILE = 'next.txt'
 
+BOX_TOP_LEFT = "┌"
+BOX_TOP_RIGHT = "┐"
+BOX_BOTTOM_LEFT = "└"
+BOX_BOTTOM_RIGHT = "┘"
+BOX_HORIZONTAL = "─"
+BOX_VERTICAL = "│"
+
 def generate_greeting() -> str:
   greetings = ["Hello",
                "Hey",
@@ -42,18 +49,15 @@ def read_file(file_name: str) -> str:
 def put_in_box(string: str, closed_box: bool) -> str:
   lines = string.split("\n")
   max_length = max(len(line) for line in lines)
-  box = "┌" + "─" * (max_length + 2) + "┐\n"
+  box = f"{BOX_TOP_LEFT}{BOX_HORIZONTAL * (max_length + 2)}{BOX_TOP_RIGHT}\n"
 
   for line in lines:
     if closed_box:
-      box += f"│ {line.ljust(max_length)} │" + "\n"
+      box += f"{BOX_VERTICAL} {line.ljust(max_length)} {BOX_VERTICAL}\n"
     else:
-      if len(line) == 0:
-        box += "│\n"
-      else:
-        box += f"│ {line}" + "\n"
+      box += f"{BOX_VERTICAL} {line}\n" if line else f"{BOX_VERTICAL}\n"
 
-  box += "└" + "─" * (max_length + 2) + "┘"
+  box += f"{BOX_BOTTOM_LEFT}{BOX_HORIZONTAL * (max_length + 2)}{BOX_BOTTOM_RIGHT}"
 
   return box
 
